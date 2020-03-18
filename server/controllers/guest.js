@@ -2,7 +2,7 @@
 
 const Guest = require('../models/guest');
 
-createGuest = (req, res) => {
+const createGuest = (req, res) => {
     const body = req.body;
 
     if (!body) {
@@ -35,7 +35,7 @@ createGuest = (req, res) => {
         });
 }
 
-updateGuest = async (req, res) => {
+const updateGuest = async (req, res) => {
     const body = req.body;
 
     if (!body) {
@@ -73,7 +73,7 @@ updateGuest = async (req, res) => {
     });
 }
 
-deleteGuest = async (req, res) => {
+const deleteGuest = async (req, res) => {
     await Guest.findOneAndDelete({ _id: req.params.id }, (err, guest) => {
         if (err) {
             return res.status(400).json({ success: false, error: err });
@@ -89,7 +89,7 @@ deleteGuest = async (req, res) => {
     }).catch(err => console.log(err));
 }
 
-getGuestById = async (req, res) => {
+const getGuestById = async (req, res) => {
     await Guest.findOne({ _id: req.params.id }, (err, guest) => {
         if (err) {
             return res.status(400).json({ success: false, error: err });
@@ -104,7 +104,7 @@ getGuestById = async (req, res) => {
     }).catch(err => console.log(err));
 }
 
-getGuests = async (req, res) => {
+const getGuests = async (req, res) => {
     await Guest.find({}, (err, guests) => {
         if (err) {
             return res.status(400).json({ success: false, error: err });
