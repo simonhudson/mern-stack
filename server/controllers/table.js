@@ -1,41 +1,41 @@
 'use strict';
 
-const Guest = require('../models/guest');
+const Table = require('../models/table');
 
-const createGuest = (req, res) => {
+const createTable = (req, res) => {
     const body = req.body;
 
     if (!body) {
         return res.status(400).json({
             success: false,
-            error: 'You must provide a guest',
+            error: 'You must provide a table',
         });
     }
 
-    const guest = new Guest(body);
+    const table = new Table(body);
 
-    if (!guest) {
+    if (!table) {
         return res.status(400).json({ success: false, error: err });
     }
 
-    guest
+    table
         .save()
         .then(() => {
             return res.status(201).json({
                 success: true,
-                id: guest._id,
-                message: 'Guest created!',
+                id: table._id,
+                message: 'Table created!',
             });
         })
         .catch(error => {
             return res.status(400).json({
                 error,
-                message: 'Guest not created!',
+                message: 'Table not created!',
             })
         });
 }
 
-const updateGuest = async (req, res) => {
+const updateTable = async (req, res) => {
     const body = req.body;
 
     if (!body) {
@@ -45,82 +45,82 @@ const updateGuest = async (req, res) => {
         });
     }
 
-    Guest.findOne({ _id: req.params.id }, (err, guest) => {
+    Table.findOne({ number: req.params.number }, (err, table) => {
         if (err) {
             return res.status(404).json({
                 err,
-                message: 'Guest not found!',
+                message: 'Table not found!',
             });
         }
-        const fields = ['firstName', 'lastName', 'gender', 'isChild', 'hasRsvp', 'isAttendingDay', 'isAttendingEvening', 'dietaryRequirements'];
-        fields.forEach(field => guest[field] = body[field]);
-        guest
+        const fields = ['number', 'people'];
+        fields.forEach(field => table[field] = body[field]);
+        table
             .save()
             .then(() => {
                 return res.status(200).json({
                     success: true,
-                    id: guest._id,
-                    message: 'Guest updated!',
+                    id: table._id,
+                    message: 'Table updated!',
                 })
             })
             .catch(error => {
                 return res.status(404).json({
                     error,
-                    message: 'Guest not updated!',
+                    message: 'Table not updated!',
                 })
             });
     });
 }
 
-const deleteGuest = async (req, res) => {
-    await Guest.findOneAndDelete({ _id: req.params.id }, (err, guest) => {
+const deleteTable = async (req, res) => {
+    await Table.findOneAndDelete({ number: req.params.number }, (err, table) => {
         if (err) {
             return res.status(400).json({ success: false, error: err });
         }
 
-        if (!guest) {
+        if (!table) {
             return res
                 .status(404)
-                .json({ success: false, error: `Guest not found` });
+                .json({ success: false, error: `Table not found` });
         }
 
-        return res.status(200).json({ success: true, data: guest });
+        return res.status(200).json({ success: true, data: table });
     }).catch(err => console.log(err));
 }
 
-const getGuestById = async (req, res) => {
-    await Guest.findOne({ _id: req.params.id }, (err, guest) => {
+const getTableByNumber = async (req, res) => {
+    await Table.findOne({ number: req.params.number }, (err, table) => {
         if (err) {
             return res.status(400).json({ success: false, error: err });
         }
 
-        if (!guest) {
+        if (!table) {
             return res
                 .status(404)
-                .json({ success: false, error: `Guest not found` });
+                .json({ success: false, error: `Table not found` });
         }
-        return res.status(200).json({ success: true, data: guest });
+        return res.status(200).json({ success: true, data: table });
     }).catch(err => console.log(err));
 }
 
-const getGuests = async (req, res) => {
-    await Guest.find({}, (err, guests) => {
+const getTables = async (req, res) => {
+    await Table.find({}, (err, tables) => {
         if (err) {
             return res.status(400).json({ success: false, error: err });
         }
-        if (!guests.length) {
+        if (!tables.length) {
             return res
                 .status(404)
-                .json({ success: false, error: `Guest not found` });
+                .json({ success: false, error: `Table not found` });
         }
-        return res.status(200).json({ success: true, data: guests });
+        return res.status(200).json({ success: true, data: tables });
     }).catch(err => console.log(err));
 }
 
 module.exports = {
-    createGuest,
-    updateGuest,
-    deleteGuest,
-    getGuests,
-    getGuestById,
+    createTable,
+    updateTable,
+    deleteTable,
+    getTables,
+    getTableByNumber,
 }
